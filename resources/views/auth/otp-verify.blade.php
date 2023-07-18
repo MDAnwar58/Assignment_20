@@ -4,7 +4,7 @@
 @section('content')
     <div class="container pt-5">
         <div class="row justify-content-center pt-5">
-            <div class="col-sm-4">
+            <div class="col-md-4 col-sm-6">
                 <div class="card">
                     <h4 class="card-header text-center">Verify OTP</h4>
                     <div class="card-body">
@@ -12,7 +12,7 @@
                             <label for="otp">OTP</label>
                             <input type="number" name="otp" id="otp" class="form-control">
                         </div>
-                        <button type="submit" class="btn btn-success w-100 mt-2">Send</button>
+                        <button type="submit" onclick="otpVerify()" class="btn btn-success w-100 mt-2">Send</button>
                     </div>
                 </div>
             </div>
@@ -23,14 +23,13 @@
 
 @section('script')
     <script>
-
-        const forgetPassword = async () => {
+        const otpVerify = async () => {
             let otp = document.getElementById("otp").value;
             
             const response = await axios.post('/verify-otp', {
                 otp: otp
             });
-            console.log(response);
+            // console.log(otp);
             if(response.status == 200) {
                 window.location.href = "/reset-password";
             }

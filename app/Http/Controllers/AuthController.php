@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
@@ -37,26 +38,33 @@ class AuthController extends Controller
     function login(Request $request)
     {
         $email = $request->input('email');
-        return $password = $request->input('password');
+        $password = $request->input('password');
         $user = User::where('email', '=', $email)->first();
-        // $checkPassword = Hash::check($password, $user->password);
-        // if ($checkPassword) {
-        if ($user->count() == 1) {
-            $token = JWTToken::createToken($email);
+        $count = User::where('email', '=', $email)->count();
+        
+        $checkPassword = Hash::check($password, $user->password);
+        if ($checkPassword) {
+            if ($count == 1) {
+                $token = JWTToken::createToken($email);
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'User Login Successfully!',
-                'token' => $token
-            ], 200);
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'User Login Successfully!',
+                ], 200)->cookie('token', $token, 60 * 24 * 30);
+            } else {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Unauthorized!'
+                ], 401);
+            }
         } else {
             return response()->json([
                 'status' => 'failed',
-                'message' => 'Unauthorized!'
+                'message' => 'Your Password is Not Vaild!'
             ], 401);
         }
     }
-    function sendOTP(Request $request): JsonResponse
+    function sendOTP(Request $request)
     {
         $email = $request->input('email');
         $otp = rand(10000, 99999);
@@ -91,8 +99,7 @@ class AuthController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'OTP Verification Successfully!',
-                'token' => $token
-            ], 200)->cookie($token);
+            ], 200)->cookie('otp', $token, 60 * 20);
         } else {
             return response()->json([
                 'status' => 'failed',
@@ -119,5 +126,16 @@ class AuthController extends Controller
                 'message' => 'Something Went Wrong!'
             ]);
         }
+    }
+
+    function logout()
+    {
+        $cookieTokenName = 'token';
+
+        $cookie = Cookie::forget($cookieTokenName);
+
+        return response()->json([
+            'message' => 'Cookie has been removed'
+        ], 200)->withCookie($cookie);
     }
 }

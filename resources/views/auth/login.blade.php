@@ -4,7 +4,7 @@
 @section('content')
     <div class="container pt-5">
         <div class="row justify-content-center pt-5">
-            <div class="col-sm-4">
+            <div class="col-sm-6 col-md-4">
                 <div class="card">
                     <h4 class="card-header text-center">User Login</h4>
                     <div class="card-body">
@@ -41,7 +41,7 @@
                 email: email,
                 password: password,
             });
-            console.log(response);
+            // console.log(response);
             if(response.status == 200) {
                 window.location.href = "/home";
             }

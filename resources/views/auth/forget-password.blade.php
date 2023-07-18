@@ -4,7 +4,7 @@
 @section('content')
     <div class="container pt-5">
         <div class="row justify-content-center pt-5">
-            <div class="col-sm-4">
+            <div class="col-sm-6 col-md-4">
                 <div class="card">
                     <h4 class="card-header text-center">Forget Password</h4>
                     <div class="card-body">
@@ -29,10 +29,10 @@
         const forgetPassword = async () => {
             let email = document.getElementById("email").value;
             
-            const response = await axios.post('/login', {
+            const response = await axios.post('/send-otp', {
                 email: email
             });
-            console.log(response);
+            // console.log(response);
             if(response.status == 200) {
                 window.location.href = "/verify-otp";
             }
