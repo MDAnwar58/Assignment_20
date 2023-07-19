@@ -34,6 +34,7 @@
             });
             // console.log(response);
             if(response.status == 200) {
+                sessionStorage.setItem('email', email);
                 window.location.href = "/verify-otp";
             }
         }

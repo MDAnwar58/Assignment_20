@@ -1,12 +1,13 @@
 <?php
 namespace App\Helper;
+// require 'vendor/autoload.php';
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
 class JWTToken 
 {
-    public static function createToken($userEmail):string {
+    public static function createToken($userEmail) {
         $key = env('JWT_KEY');
         $payload = [
             'iss' => 'Authentication_POS',
@@ -18,7 +19,7 @@ class JWTToken
         return JWT::encode($payload, $key, 'HS256');
     }
 
-    public static function createTokenForSetPassword($userEmail): string
+    public static function createTokenForSetPassword($userEmail)
     {
         $key = env('JWT_KEY');
         $payload = [
@@ -28,7 +29,8 @@ class JWTToken
             'userEmail' => $userEmail
         ];
 
-        return JWT::encode($payload, $key, 'HS256');
+        $token = JWT::encode($payload, $key, 'HS256');
+        return $token;
     }
     public static function verifyToken($token)
     {

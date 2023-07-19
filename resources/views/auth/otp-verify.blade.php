@@ -24,13 +24,16 @@
 @section('script')
     <script>
         const otpVerify = async () => {
+            let email = sessionStorage.getItem('email');
             let otp = document.getElementById("otp").value;
             
             const response = await axios.post('/verify-otp', {
+                email: email,
                 otp: otp
             });
-            // console.log(otp);
+            // console.log(response);
             if(response.status == 200) {
+                // sessionStorage.removeItem('email');
                 window.location.href = "/reset-password";
             }
         }

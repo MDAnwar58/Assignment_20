@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ViewController;
 use App\Http\Middleware\TokenVerify;
+use App\Http\Middleware\TokenVerifyForResetPassword;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,7 +27,7 @@ Route::get('/login', [ViewController::class, 'loginPage'])->name('login');
 Route::get('/register', [ViewController::class, 'registerPage'])->name(name: 'register');
 Route::get('/forget-password', [ViewController::class, 'forgetPage'])->name('forget.password');
 Route::get('/verify-otp', [ViewController::class, 'verifyOTPPage'])->name('verify.otp');
-Route::get('/reset-password', [ViewController::class, 'resetPassword'])->name('reset.password');
+Route::get('/reset-password', [ViewController::class, 'resetPassword'])->name('reset.password')->middleware([TokenVerifyForResetPassword::class]);
 
 // api routes
 Route::post('/register' , [AuthController::class, 'register']);

@@ -41,7 +41,7 @@ class AuthController extends Controller
         $password = $request->input('password');
         $user = User::where('email', '=', $email)->first();
         $count = User::where('email', '=', $email)->count();
-        
+
         $checkPassword = Hash::check($password, $user->password);
         if ($checkPassword) {
             if ($count == 1) {
@@ -86,16 +86,16 @@ class AuthController extends Controller
             ], 401);
         }
     }
-    function verifyOTP(Request $request): JsonResponse
+    function verifyOTP(Request $request)
     {
         $email = $request->input('email');
         $otp = $request->input('otp');
         $count = User::where('email', '=', $email)->where('otp', '=', $otp)->count();
+
         if ($count == 1) {
             User::where('email', '=', $email)->update(['otp' => '0']);
 
             $token = JWTToken::createTokenForSetPassword($email);
-
             return response()->json([
                 'status' => 'success',
                 'message' => 'OTP Verification Successfully!',
@@ -114,12 +114,15 @@ class AuthController extends Controller
             $email = $request->input('email');
             $password = $request->input(key: 'password');
 
-            User::where('email', '=', $email)->update(['password' => $password]);
+            User::where('email', '=', $email)->update(['password' => Hash::make($password)]);
+            
+            $cookieTokenName = 'otp';
+            $cookie = Cookie::forget($cookieTokenName);
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Password Reset Successfully!'
-            ], 200);
+            ], 200)->withCookie($cookie);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'failed',
